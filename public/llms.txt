@@ -7,44 +7,47 @@
 ## Pages
 
 ### בית
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app
+https://tomermor-law.co.il
 משרד עורכי דין תומר מור ביהוד מתמחה במקרקעין, ליטיגציה וייצוג משפטי מקצועי. עסקאות נדל&quot;ן, סכסוכי קניין ותביעות — הכל תחת קורת גג אחת. פנו אלינו היום.
 
 ### תחומי עיסוק
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/practice-areas
+https://tomermor-law.co.il/practice-areas
 גלו את מלוא תחומי המומחיות שלנו: עסקאות מקרקעין, ייצוג משפטי בבנייה בלתי חוקית, התחדשות עירונית וליטיגציה מסחרית לעסקים. הפתרון המשפטי שלכם מתחיל כאן.
 
 ### אודות
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/about
+https://tomermor-law.co.il/about
 תומר מור, עורך דין מנוסה ביהוד, משלב מומחיות עמוקה במקרקעין עם ליטיגציה תוצאתית. למדו מי עומד לצידכם בכל הליך משפטי ומדוע לקוחות בוחרים בנו שוב ושוב.
 
 ### צור קשר
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
+https://tomermor-law.co.il/contact
 מוכנים לפעול? צרו קשר עם משרד עורכי דין תומר מור ביהוד לייעוץ ראשוני בתחומי מקרקעין, ליטיגציה והתחדשות עירונית. אל תחכו — כל יום שעובר חשוב.
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/privacy
+https://tomermor-law.co.il/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/terms
+https://tomermor-law.co.il/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://moshe-orkei-din-tomer-mor-wait.zappy5.app/accessibility
+https://tomermor-law.co.il/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
 
 ## How to Contact Us
 
-- (No contact details configured yet.)
+- Email: tomeryhi@gmail.com
+- Phone: +972506778122
+- Phone (tel): tel:+972506778122
+- Address: יהודה הלוי 38, יהוד, ישראל
 
 ### Contact form
-- URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
-- Endpoint: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/api/email/contact-form
+- URL: https://tomermor-law.co.il/contact
+- Endpoint: https://tomermor-law.co.il/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -80,6 +83,6 @@ A law firm based in Yehud, Israel, specializing in real estate law, litigation, 
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://moshe-orkei-din-tomer-mor-wait.zappy5.app/sitemap.xml
-- Robots: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/robots.txt
-- Flattened page text (for LLMs): https://moshe-orkei-din-tomer-mor-wait.zappy5.app/llms-full.txt
+- Sitemap (XML): https://tomermor-law.co.il/sitemap.xml
+- Robots: https://tomermor-law.co.il/robots.txt
+- Flattened page text (for LLMs): https://tomermor-law.co.il/llms-full.txt

@@ -2,13 +2,13 @@
 
 A law firm based in Yehud, Israel, specializing in real estate law, litigation, and court representation. The firm focuses on providing professional legal services across property transactions and disputes, as well as representing clients in legal proceedings. The practice combines expertise in both transactional and contentious legal matters.
 
-Source: https://moshe-orkei-din-tomer-mor-wait.zappy5.app
+Source: https://tomermor-law.co.il
 
 ---
 
 ## מקרקעין — משרד עורכי דין - תומר מור
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app
+URL: https://tomermor-law.co.il
 Description: משרד עורכי דין תומר מור ביהוד מתמחה במקרקעין, ליטיגציה וייצוג משפטי מקצועי. עסקאות נדל&quot;ן, סכסוכי קניין ותביעות — הכל תחת קורת גג אחת. פנו אלינו היום.
 
 מקרקעין — משרד עורכי דין - תומר מור
@@ -519,11 +519,11 @@ Description: משרד עורכי דין תומר מור ביהוד מתמחה ב
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -565,7 +565,7 @@ Description: משרד עורכי דין תומר מור ביהוד מתמחה ב
 
 ## מהנדל&quot;ן ועד בית המשפט — משרד עורכי דין - תומר מור
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/practice-areas
+URL: https://tomermor-law.co.il/practice-areas
 Description: גלו את מלוא תחומי המומחיות שלנו: עסקאות מקרקעין, ייצוג משפטי בבנייה בלתי חוקית, התחדשות עירונית וליטיגציה מסחרית לעסקים. הפתרון המשפטי שלכם מתחיל כאן.
 
 מהנדל"ן ועד בית המשפט — משרד עורכי דין - תומר מור
@@ -1181,11 +1181,11 @@ Description: גלו את מלוא תחומי המומחיות שלנו: עסקא
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -1227,7 +1227,7 @@ Description: גלו את מלוא תחומי המומחיות שלנו: עסקא
 
 ## הכירו את הכוח המשפטי שמאחוריכם — משרד עורכי דין - תומר מור
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/about
+URL: https://tomermor-law.co.il/about
 Description: תומר מור, עורך דין מנוסה ביהוד, משלב מומחיות עמוקה במקרקעין עם ליטיגציה תוצאתית. למדו מי עומד לצידכם בכל הליך משפטי ומדוע לקוחות בוחרים בנו שוב ושוב.
 
 הכירו את הכוח המשפטי שמאחוריכם — משרד עורכי דין - תומר מור
@@ -1323,7 +1323,7 @@ Description: תומר מור, עורך דין מנוסה ביהוד, משלב מ
 
 
 
-משרד בוטיק ביהוד — שירות אישי ומקצועי
+יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -1662,7 +1662,7 @@ Description: תומר מור, עורך דין מנוסה ביהוד, משלב מ
 
 - פגישות בתיאום מראש, ימים א׳–ו׳
 
-- [business_phone]
+- +972506778122
 
 
 
@@ -1735,11 +1735,11 @@ Description: תומר מור, עורך דין מנוסה ביהוד, משלב מ
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -1781,7 +1781,7 @@ Description: תומר מור, עורך דין מנוסה ביהוד, משלב מ
 
 ## הצעד הראשון לניצחון המשפטי שלכם — משרד עורכי דין - תומר מור
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
+URL: https://tomermor-law.co.il/contact
 Description: מוכנים לפעול? צרו קשר עם משרד עורכי דין תומר מור ביהוד לייעוץ ראשוני בתחומי מקרקעין, ליטיגציה והתחדשות עירונית. אל תחכו — כל יום שעובר חשוב.
 
 הצעד הראשון לניצחון המשפטי שלכם — משרד עורכי דין - תומר מור
@@ -1882,7 +1882,7 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 
 טלפון
 
-[business_phone]
++972506778122
 
 ימים א׳–ה׳, 9:00–18:00
 
@@ -1898,7 +1898,7 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 
 דוא״ל
 
-[business_email]
+tomeryhi@gmail.com
 
 נחזור תוך יום עסקים
 
@@ -1915,7 +1915,7 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 משרד
 
 
-[business_address]
+יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל
 
 הצג במפה  ←
 
@@ -1989,15 +1989,15 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 
 
 
-[business_phone]
++972506778122
 
 
 
-[business_email]
+tomeryhi@gmail.com
 
 
 
-[business_address]
+יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -2074,11 +2074,11 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 המשרד ממוקם ביהוד, במרכז גוש דן, ונגיש בנוחות מתל אביב, רמת גן, פתח תקווה, ראשון לציון ויישובי השפלה. אנו מעניקים שירות ייעוץ משפטי מקצועי בתחומי מקרקעין, ליטיגציה וייצוג בבתי משפט.
 
 
-- כתובת [business_address], יהוד
+- כתובת יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל, יהוד
 
-- טלפון [business_phone]
+- טלפון +972506778122
 
-- דוא"ל [business_email]
+- דוא"ל tomeryhi@gmail.com
 
 - שעות פעילות ראשון–חמישי, 09:00–18:00
 
@@ -2199,11 +2199,11 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -2245,7 +2245,7 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 
 ## מדיניות פרטיות
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/privacy
+URL: https://tomermor-law.co.il/privacy
 Description: מדיניות הפרטיות שלנו - כיצד אנו אוספים, משתמשים ומגנים על המידע שלכם
 
 מדיניות פרטיות
@@ -2303,7 +2303,7 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 
 
 
-משרד עורכי דין - תומר מור ("החברה", "אנו", "שלנו") מחויבת להגן על פרטיותכם. מדיניות פרטיות זו מסבירה כיצד אנו אוספים, משתמשים ומגינים על המידע שלכם בעת השימוש באתר [business_website] ("השירות").
+משרד עורכי דין - תומר מור ("החברה", "אנו", "שלנו") מחויבת להגן על פרטיותכם. מדיניות פרטיות זו מסבירה כיצד אנו אוספים, משתמשים ומגינים על המידע שלכם בעת השימוש באתר https://tomermor-law.co.il ("השירות").
 
 
 ## 1. איסוף מידע
@@ -2401,11 +2401,11 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 
 - חברה: משרד עורכי דין - תומר מור
 
-- אימייל: [business_email]
+- אימייל: tomeryhi@gmail.com
 
-- טלפון: [business_phone]
+- טלפון: +972506778122
 
-- כתובת: [business_address]
+- כתובת: יהודה הלוי 38, ישראל
 
 
 
@@ -2457,11 +2457,11 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -2503,7 +2503,7 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 
 ## הצהרת נגישות
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/accessibility
+URL: https://tomermor-law.co.il/accessibility
 Description: הצהרת הנגישות שלנו - מחויבותנו לנגישות דיגיטלית
 
 הצהרת נגישות
@@ -2667,9 +2667,9 @@ Description: הצהרת הנגישות שלנו - מחויבותנו לנגיש�
 
 - חברה: משרד עורכי דין - תומר מור
 
-- אימייל: [business_email]
+- אימייל: tomeryhi@gmail.com
 
-- טלפון: [business_phone]
+- טלפון: +972506778122
 
 
 
@@ -2724,11 +2724,11 @@ Description: הצהרת הנגישות שלנו - מחויבותנו לנגיש�
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
@@ -2770,7 +2770,7 @@ Description: הצהרת הנגישות שלנו - מחויבותנו לנגיש�
 
 ## תנאי שימוש
 
-URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/terms
+URL: https://tomermor-law.co.il/terms
 Description: תנאי השימוש באתר - הזכויות והחובות של המשתמשים
 
 תנאי שימוש
@@ -2957,11 +2957,11 @@ Description: תנאי השימוש באתר - הזכויות והחובות של
 
 - חברה: משרד עורכי דין - תומר מור
 
-- אימייל: [business_email]
+- אימייל: tomeryhi@gmail.com
 
-- טלפון: [business_phone]
+- טלפון: +972506778122
 
-- כתובת: [business_address]
+- כתובת: יהודה הלוי 38, ישראל
 
 
 
@@ -3010,11 +3010,11 @@ Description: תנאי השימוש באתר - הזכויות והחובות של
 #### יצירת קשר
 
 
-- [business_email]
+- tomeryhi@gmail.com
 
-- [business_phone]
+- +972506778122
 
-- [business_address]
+- יהודה הלוי 38, יהוד, ישראל
 
 
 
