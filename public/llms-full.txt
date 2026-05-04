@@ -2,13 +2,13 @@
 
 A law firm based in Yehud, Israel, specializing in real estate law, litigation, and court representation. The firm focuses on providing professional legal services across property transactions and disputes, as well as representing clients in legal proceedings. The practice combines expertise in both transactional and contentious legal matters.
 
-Source: https://example.com
+Source: https://moshe-orkei-din-tomer-mor-wait.zappy5.app
 
 ---
 
 ## מקרקעין — משרד עורכי דין - תומר מור
 
-URL: https://example.com
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app
 Description: משרד עורכי דין תומר מור ביהוד מתמחה במקרקעין, ליטיגציה וייצוג משפטי מקצועי. עסקאות נדל&quot;ן, סכסוכי קניין ותביעות — הכל תחת קורת גג אחת. פנו אלינו היום.
 
 מקרקעין — משרד עורכי דין - תומר מור
@@ -565,7 +565,7 @@ Description: משרד עורכי דין תומר מור ביהוד מתמחה ב
 
 ## מהנדל&quot;ן ועד בית המשפט — משרד עורכי דין - תומר מור
 
-URL: https://example.com/practice-areas
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/practice-areas
 Description: גלו את מלוא תחומי המומחיות שלנו: עסקאות מקרקעין, ייצוג משפטי בבנייה בלתי חוקית, התחדשות עירונית וליטיגציה מסחרית לעסקים. הפתרון המשפטי שלכם מתחיל כאן.
 
 מהנדל"ן ועד בית המשפט — משרד עורכי דין - תומר מור
@@ -1227,7 +1227,7 @@ Description: גלו את מלוא תחומי המומחיות שלנו: עסקא
 
 ## הכירו את הכוח המשפטי שמאחוריכם — משרד עורכי דין - תומר מור
 
-URL: https://example.com/about
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/about
 Description: תומר מור, עורך דין מנוסה ביהוד, משלב מומחיות עמוקה במקרקעין עם ליטיגציה תוצאתית. למדו מי עומד לצידכם בכל הליך משפטי ומדוע לקוחות בוחרים בנו שוב ושוב.
 
 הכירו את הכוח המשפטי שמאחוריכם — משרד עורכי דין - תומר מור
@@ -1781,7 +1781,7 @@ Description: תומר מור, עורך דין מנוסה ביהוד, משלב מ
 
 ## הצעד הראשון לניצחון המשפטי שלכם — משרד עורכי דין - תומר מור
 
-URL: https://example.com/contact
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
 Description: מוכנים לפעול? צרו קשר עם משרד עורכי דין תומר מור ביהוד לייעוץ ראשוני בתחומי מקרקעין, ליטיגציה והתחדשות עירונית. אל תחכו — כל יום שעובר חשוב.
 
 הצעד הראשון לניצחון המשפטי שלכם — משרד עורכי דין - תומר מור
@@ -2245,7 +2245,7 @@ Description: מוכנים לפעול? צרו קשר עם משרד עורכי ד�
 
 ## מדיניות פרטיות
 
-URL: https://example.com/privacy
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/privacy
 Description: מדיניות הפרטיות שלנו - כיצד אנו אוספים, משתמשים ומגנים על המידע שלכם
 
 מדיניות פרטיות
@@ -2503,7 +2503,7 @@ Description: מדיניות הפרטיות שלנו - כיצד אנו אוספי
 
 ## הצהרת נגישות
 
-URL: https://example.com/accessibility
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/accessibility
 Description: הצהרת הנגישות שלנו - מחויבותנו לנגישות דיגיטלית
 
 הצהרת נגישות
@@ -2770,7 +2770,7 @@ Description: הצהרת הנגישות שלנו - מחויבותנו לנגיש�
 
 ## תנאי שימוש
 
-URL: https://example.com/terms
+URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/terms
 Description: תנאי השימוש באתר - הזכויות והחובות של המשתמשים
 
 תנאי שימוש

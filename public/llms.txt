@@ -7,33 +7,33 @@
 ## Pages
 
 ### בית
-https://example.com
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app
 משרד עורכי דין תומר מור ביהוד מתמחה במקרקעין, ליטיגציה וייצוג משפטי מקצועי. עסקאות נדל&quot;ן, סכסוכי קניין ותביעות — הכל תחת קורת גג אחת. פנו אלינו היום.
 
 ### תחומי עיסוק
-https://example.com/practice-areas
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/practice-areas
 גלו את מלוא תחומי המומחיות שלנו: עסקאות מקרקעין, ייצוג משפטי בבנייה בלתי חוקית, התחדשות עירונית וליטיגציה מסחרית לעסקים. הפתרון המשפטי שלכם מתחיל כאן.
 
 ### אודות
-https://example.com/about
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/about
 תומר מור, עורך דין מנוסה ביהוד, משלב מומחיות עמוקה במקרקעין עם ליטיגציה תוצאתית. למדו מי עומד לצידכם בכל הליך משפטי ומדוע לקוחות בוחרים בנו שוב ושוב.
 
 ### צור קשר
-https://example.com/contact
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
 מוכנים לפעול? צרו קשר עם משרד עורכי דין תומר מור ביהוד לייעוץ ראשוני בתחומי מקרקעין, ליטיגציה והתחדשות עירונית. אל תחכו — כל יום שעובר חשוב.
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://example.com/privacy
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://example.com/terms
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://example.com/accessibility
+https://moshe-orkei-din-tomer-mor-wait.zappy5.app/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
@@ -43,8 +43,8 @@ Information about WCAG compliance and accessibility features.
 - (No contact details configured yet.)
 
 ### Contact form
-- URL: https://example.com/contact
-- Endpoint: https://example.com/api/email/contact-form
+- URL: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/contact
+- Endpoint: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -80,6 +80,6 @@ A law firm based in Yehud, Israel, specializing in real estate law, litigation, 
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://example.com/sitemap.xml
-- Robots: https://example.com/robots.txt
-- Flattened page text (for LLMs): https://example.com/llms-full.txt
+- Sitemap (XML): https://moshe-orkei-din-tomer-mor-wait.zappy5.app/sitemap.xml
+- Robots: https://moshe-orkei-din-tomer-mor-wait.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://moshe-orkei-din-tomer-mor-wait.zappy5.app/llms-full.txt
