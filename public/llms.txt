@@ -1,0 +1,85 @@
+# משרד עורכי דין - תומר מור — Generative Engine Optimization Map
+
+> A law firm based in Yehud, Israel, specializing in real estate law, litigation, and court representation. The firm focuses on providing professional legal services across property transactions and disputes, as well as representing clients in legal proceedings. The practice combines expertise in both transactional and contentious legal matters.
+
+---
+
+## Pages
+
+### בית
+https://example.com
+משרד עורכי דין תומר מור ביהוד מתמחה במקרקעין, ליטיגציה וייצוג משפטי מקצועי. עסקאות נדל&quot;ן, סכסוכי קניין ותביעות — הכל תחת קורת גג אחת. פנו אלינו היום.
+
+### תחומי עיסוק
+https://example.com/practice-areas
+גלו את מלוא תחומי המומחיות שלנו: עסקאות מקרקעין, ייצוג משפטי בבנייה בלתי חוקית, התחדשות עירונית וליטיגציה מסחרית לעסקים. הפתרון המשפטי שלכם מתחיל כאן.
+
+### אודות
+https://example.com/about
+תומר מור, עורך דין מנוסה ביהוד, משלב מומחיות עמוקה במקרקעין עם ליטיגציה תוצאתית. למדו מי עומד לצידכם בכל הליך משפטי ומדוע לקוחות בוחרים בנו שוב ושוב.
+
+### צור קשר
+https://example.com/contact
+מוכנים לפעול? צרו קשר עם משרד עורכי דין תומר מור ביהוד לייעוץ ראשוני בתחומי מקרקעין, ליטיגציה והתחדשות עירונית. אל תחכו — כל יום שעובר חשוב.
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://example.com/contact
+- Endpoint: https://example.com/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `name` (text, required)
+  - `email` (email, required)
+  - `phone` (tel)
+  - `message` (textarea, required)
+  - `privacy_consent` (checkbox, required)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About משרד עורכי דין - תומר מור
+A law firm based in Yehud, Israel, specializing in real estate law, litigation, and court representation. The firm focuses on providing professional legal services across property transactions and disputes, as well as representing clients in legal proceedings. The practice combines expertise in both transactional and contentious legal matters.
+
+## Services/Products
+- מקרקעין
+- ליטיגציה
+- ייצוג לקוחות בבתי משפט
+
+## Target Audience
+- משקיעי נדל"ן
+- בעלי עסקים קטנים
+- אנשים בעלי הון עצמי גבוה
+- זוגות צעירים שמחפשים דירה
+- אנשים שעומד כנגדם כתב אישום על בנייה בלתי חוקית
+
+## Industry
+משפטים / שירותים משפטיים
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://example.com/sitemap.xml
+- Robots: https://example.com/robots.txt
+- Flattened page text (for LLMs): https://example.com/llms-full.txt
