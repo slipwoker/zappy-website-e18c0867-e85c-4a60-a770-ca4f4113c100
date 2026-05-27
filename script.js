@@ -1128,31 +1128,24 @@ function withConsent(category, callback) {
 
 window.onload = function() {
     
-    try {
+    try { /* ZAPPY_A11Y_DYNAMIC_LANG */
+        var htmlEl = document.documentElement;
+        var pageLang = (htmlEl.getAttribute('lang') || 'en').toLowerCase().split('-')[0];
+        var pageDir = (htmlEl.getAttribute('dir') || '').toLowerCase();
+        var rtlLangs = ['he', 'ar', 'fa', 'ur', 'yi', 'iw'];
+        var isPageRTL = pageDir === 'rtl' || rtlLangs.indexOf(pageLang) !== -1;
+        var buttonSide = isPageRTL ? 'left' : 'right';
+        var langMap = { en: 'en-US', es: 'es-ES', fr: 'fr-FR', de: 'de-DE', it: 'it-IT', pt: 'pt-PT', nl: 'nl-NL', he: 'he-IL', ar: 'ar-SA' };
+        var forceLang = langMap[pageLang] || 'en-US';
+        var iconPos = { bottom: { size: 50, units: 'px' }, type: 'fixed' };
+        iconPos[buttonSide] = { size: 20, units: 'px' };
         window.micAccessTool = new MicAccessTool({
-            buttonPosition: 'left', // Position on left side
-            forceLang: 'he-IL', // Force language
-            icon: {
-                position: {
-                    bottom: { size: 50, units: 'px' },
-                    left: { size: 20, units: 'px' },
-                    type: 'fixed'
-                },
-                backgroundColor: 'transparent', // Transparent to allow CSS styling
-                color: 'transparent', // Let CSS handle coloring
-                img: 'accessible',
-                circular: false // Square button for consistent styling
-            },
-            menu: {
-                dimensions: {
-                    width: { size: 300, units: 'px' },
-                    height: { size: 'auto', units: 'px' }
-                }
-            }
+            buttonPosition: buttonSide,
+            forceLang: forceLang,
+            icon: { position: iconPos, backgroundColor: 'transparent', color: 'transparent', img: 'accessible', circular: false },
+            menu: { dimensions: { width: { size: 300, units: 'px' }, height: { size: 'auto', units: 'px' } } }
         });
-        
-    } catch (error) {
-    }
+    } catch (error) {}
     
     // Keyboard shortcut handler: ALT+A (Option+A on Mac) to toggle accessibility widget visibility (desktop only)
     document.addEventListener('keydown', function(event) {
@@ -1608,11 +1601,11 @@ window.onload = function() {
 /* END ZAPPY_PUBLISHED_LIGHTBOX_RUNTIME */
 
 
-/* ZAPPY_PUBLISHED_ZOOM_WRAPPER_RUNTIME */
+/* ZAPPY_PUBLISHED_ZOOM_WRAPPER_RUNTIME_V2 */
 (function(){
   try {
-    if (window.__zappyPublishedZoomInit) return;
-    window.__zappyPublishedZoomInit = true;
+    if (window.__zappyPublishedZoomInitV2) return;
+    window.__zappyPublishedZoomInitV2 = true;
 
     function isHeroBgWrapper(wrapper) {
       var img = wrapper.querySelector('img');
@@ -1642,6 +1635,22 @@ window.onload = function() {
         return { w: 100, h: 100 };
       if (imgA >= contA) return { w: (imgA / contA) * 100, h: 100 };
       return { w: 100, h: (contA / imgA) * 100 };
+    }
+
+    function normalizeInsertedZoomParent(wrapper) {
+      try {
+        var parent = wrapper && wrapper.parentElement;
+        if (!parent) return;
+        var parentClass = (parent.className || '').toString();
+        var isInserted = / zappy-inserted-element |^zappy-inserted-element | zappy-inserted-element$|^zappy-inserted-element$/.test(' ' + parentClass + ' ');
+        if (!isInserted) return;
+        parent.style.setProperty('width', '100%', 'important');
+        parent.style.setProperty('max-width', '100%', 'important');
+        parent.style.setProperty('height', 'auto', 'important');
+        parent.style.setProperty('min-height', '0', 'important');
+        parent.style.setProperty('max-height', 'none', 'important');
+        parent.setAttribute('data-zappy-inserted-zoom-parent-normalized', '1');
+      } catch (_e) {}
     }
 
     // FULL-BLEED FIRST-CHILD MEDIA: when the wrapper's parent (the image-wrap)
@@ -1902,6 +1911,7 @@ window.onload = function() {
       var widthMode = wrapper.getAttribute('data-zappy-zoom-wrapper-width-mode');
       if (widthMode === 'full') return;
       if (isHeroBgWrapper(wrapper)) return;
+      normalizeInsertedZoomParent(wrapper);
 
       var isMobile = window.innerWidth <= 768;
       if (isMobile) {
@@ -2438,101 +2448,172 @@ window.onload = function() {
 /* ZAPPY_RUNTIME_CONTRAST_FIX */
 (function(){
   try {
-    if (window.__zappyContrastFixInit) return;
-    window.__zappyContrastFixInit = true;
+/**
+ * Shared runtime contrast-fix IIFE body.
+ *
+ * This file is the SINGLE SOURCE OF TRUTH for the client-side WCAG contrast
+ * fixer that runs on both preview (02-navigation.js) and published sites
+ * (githubService.js → ensureRuntimeContrastFix). Any fix applied here
+ * automatically propagates to both surfaces.
+ *
+ * IMPORTANT: This file is read as a string template by Node, NOT executed
+ * directly. It contains raw browser-side JavaScript (ES5-compat, no require,
+ * no import). The consumers wrap it in an IIFE and append their own trigger
+ * (preview: setTimeout; publish: DOMContentLoaded).
+ *
+ * To add/change the contrast logic, edit THIS file and run:
+ *   node server/tests/sectionBackgroundTextColorSync.test.js
+ * The test pins that both consumers include the shared code.
+ */
 
-    function getLum(r,g,b){
-      var a=[r,g,b].map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});
-      return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;
-    }
-    function contrast(c1,c2){
-      var l1=getLum(c1.r,c1.g,c1.b),l2=getLum(c2.r,c2.g,c2.b);
-      var hi=Math.max(l1,l2),lo=Math.min(l1,l2);
-      return (hi+0.05)/(lo+0.05);
-    }
-    function parseRGB(c){
-      if(!c)return null;var m=c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      return m?{r:+m[1],g:+m[2],b:+m[3]}:null;
-    }
-    function effectiveBg(el){
-      var e=el;
-      while(e){
-        var cs=window.getComputedStyle(e);
-        var bi=cs.backgroundImage;
-        if(bi&&bi!=='none'){
-          if(bi.indexOf('url(')>=0) return null;
-          var isRgba=bi.match(/rgba\(/);
-          if(!isRgba){
-            var gm=bi.match(/rgb\(\s*(\d+),\s*(\d+),\s*(\d+)/);
-            if(gm) return 'rgb('+gm[1]+','+gm[2]+','+gm[3]+')';
-          }
-        }
-        var bg=cs.backgroundColor;
-        if(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'){
-          var am=bg.match(/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*([\d.]+)/);
-          if(!am||parseFloat(am[1])>=0.6) return bg;
-        }
-        e=e.parentElement;
-      }
-      return 'rgb(255,255,255)';
-    }
+if (window.__zappyContrastFixInit) return;
+window.__zappyContrastFixInit = true;
 
-    function resolveVar(val){
-      if(!val||val.indexOf('var(')===-1)return val;
-      var m=val.match(/var\(--([^,)]+)/);
-      if(!m)return val;
-      return getComputedStyle(document.documentElement).getPropertyValue('--'+m[1]).trim()||val;
+function getLum(r,g,b){
+  var a=[r,g,b].map(function(v){v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});
+  return a[0]*0.2126+a[1]*0.7152+a[2]*0.0722;
+}
+function contrastRatio(c1,c2){
+  var l1=getLum(c1.r,c1.g,c1.b),l2=getLum(c2.r,c2.g,c2.b);
+  return (Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05);
+}
+function parseRGB(c){
+  if(!c)return null;var m=c.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  return m?{r:+m[1],g:+m[2],b:+m[3]}:null;
+}
+function effectiveBg(el){
+  var e=el;
+  while(e){
+    var cs=window.getComputedStyle(e);
+    var bi=cs.backgroundImage;
+    if(bi&&bi!=='none'){
+      if(bi.indexOf('url(')>=0) return null;
+      var isRgba=bi.match(/rgba\(/);
+      if(!isRgba){
+        var gm=bi.match(/rgb\(\s*(\d+),\s*(\d+),\s*(\d+)/);
+        if(gm) return 'rgb('+gm[1]+','+gm[2]+','+gm[3]+')';
+      }
     }
-
-    function fixContrast(){
-      var root=getComputedStyle(document.documentElement);
-      var dark=root.getPropertyValue('--text-dark').trim()||root.getPropertyValue('--text').trim()||'#1a1a1a';
-      var light=root.getPropertyValue('--text-light').trim()||root.getPropertyValue('--background').trim()||'#ffffff';
-      var darkRGB=parseRGB(dark);
-      if(!darkRGB){
-        var d=document.createElement('div');d.style.color=dark;document.body.appendChild(d);
-        darkRGB=parseRGB(getComputedStyle(d).color);d.remove();
-      }
-      var lightRGB=parseRGB(light);
-      if(!lightRGB){
-        var d2=document.createElement('div');d2.style.color=light;document.body.appendChild(d2);
-        lightRGB=parseRGB(getComputedStyle(d2).color);d2.remove();
-      }
-      if(!darkRGB)darkRGB={r:26,g:26,b:26};
-      if(!lightRGB)lightRGB={r:255,g:255,b:255};
-
-      var mainEl=document.querySelector('main')||document.body;
-      var els=mainEl.querySelectorAll('h1,h2,h3,h4,h5,h6,p,span,a,button,li,label,td,th,dt,dd,figcaption');
-      var fixed=0;
-      for(var i=0;i<els.length;i++){
-        var el=els[i];
-        if(el.closest('nav,header,.zappy-header,footer,.zappy-footer'))continue;
-        var txt=el.textContent?el.textContent.trim():'';
-        if(!txt)continue;
-        var r=el.getBoundingClientRect();
-        if(r.width===0||r.height===0)continue;
-        var cs=getComputedStyle(el);
-        var col=resolveVar(cs.color);
-        var bg=effectiveBg(el);
-        var cRGB=parseRGB(col),bRGB=parseRGB(bg);
-        if(!cRGB||!bRGB)continue;
-        var ratio=contrast(cRGB,bRGB);
-        if(ratio<4.5){
-          var darkC=contrast(darkRGB,bRGB);
-          var lightC=contrast(lightRGB,bRGB);
-          var best=darkC>=lightC?dark:light;
-          var bestRatio=Math.max(darkC,lightC);
-          if(bestRatio<4.5){
-            var blackC=contrast({r:0,g:0,b:0},bRGB);
-            var whiteC=contrast({r:255,g:255,b:255},bRGB);
-            best=blackC>=whiteC?'#000000':'#ffffff';
-          }
-          el.style.setProperty('color',best,'important');
-          fixed++;
-        }
-      }
-      if(fixed>0)console.log('[Contrast Fix] Fixed '+fixed+' low-contrast elements');
+    var bg=cs.backgroundColor;
+    if(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'){
+      var am=bg.match(/rgba\(\s*\d+,\s*\d+,\s*\d+,\s*([\d.]+)/);
+      if(!am||parseFloat(am[1])>=0.6) return bg;
     }
+    e=e.parentElement;
+  }
+  return 'rgb(255,255,255)';
+}
+
+function isElementVisible(el,stopAt){
+  var n=el;
+  while(n&&n!==stopAt&&n!==document.body){
+    var s=window.getComputedStyle(n);
+    if(s.display==='none'||s.visibility==='hidden') return false;
+    if(parseFloat(s.opacity||'1')<=0.1) return false;
+    n=n.parentElement;
+  }
+  return true;
+}
+
+function hasImageOrVideoBackground(el){
+  var e=el;
+  while(e&&e!==document.body){
+    if(e.getAttribute){
+      var bgType=e.getAttribute('data-zappy-bg-type');
+      if(bgType==='image'||bgType==='video') return true;
+    }
+    var cs=window.getComputedStyle(e);
+    var bi=cs.backgroundImage;
+    if(bi&&bi.indexOf('url(')>=0) return true;
+    e=e.parentElement;
+  }
+  var section=el.closest&&el.closest(
+    'section,article,[data-zappy-section],[data-zappy-component],[class*="hero"],[class*="section"]'
+  );
+  if(section){
+    var bgChild=section.querySelector(
+      'img[data-hero-bg],.zappy-section-video-bg,.zappy-section-video,'+
+      'img[class*="hero-bg"],img[class*="bg-image"],img[class*="background-image"],'+
+      'video[class*="bg"],video[autoplay][loop]'
+    );
+    if(bgChild&&isElementVisible(bgChild,section)){
+      return true;
+    }
+  }
+  return false;
+}
+
+function resolveVar(val){
+  if(!val||val.indexOf('var(')===-1)return val;
+  var m=val.match(/var\(--([^,)]+)/);
+  if(!m)return val;
+  return getComputedStyle(document.documentElement).getPropertyValue('--'+m[1]).trim()||val;
+}
+
+function isDecorativeAccentText(el){
+  if(!el||!el.matches)return false;
+  if(el.matches('.font-accent,.hero-logotype,.hero-logotype-line,[class*="script"],[class*="accent-line"],[class*="subheadline"]'))return true;
+  if(el.closest('.font-accent,.hero-logotype,.hero-logotype-line,[class*="script"],[class*="accent-line"],[class*="subheadline"]'))return true;
+  if(el.matches('.display-xl,.display-1,.display-2,[class*="hero-word"],[class*="hero-pizza"],[class*="hero-anywhere"],[class*="pizza-word"],[class*="anywhere-word"],[class*="headline-pizza"],[class*="headline-anywhere"],[class*="headline-on-the"],[class*="headline-move"],[class*="logotype"],[class*="wordmark"]'))return true;
+  if(el.closest('[class*="hero-word"],[class*="hero-pizza"],[class*="hero-anywhere"],[class*="pizza-word"],[class*="anywhere-word"],[class*="headline-pizza"],[class*="headline-anywhere"],[class*="headline-on-the"],[class*="headline-move"],[class*="logotype"],[class*="wordmark"]'))return true;
+  if(el.closest('h1.display-xl,h2.display-xl,h1.display-1,h2.display-1,h1.display-2,h2.display-2'))return true;
+  return false;
+}
+
+function fixContrast(){
+  var root=getComputedStyle(document.documentElement);
+  var dark=root.getPropertyValue('--text-dark').trim()||root.getPropertyValue('--text').trim()||'#1a1a1a';
+  var light=root.getPropertyValue('--text-light').trim()||root.getPropertyValue('--background').trim()||'#ffffff';
+  var darkRGB=parseRGB(dark);
+  if(!darkRGB){
+    var d=document.createElement('div');d.style.color=dark;document.body.appendChild(d);
+    darkRGB=parseRGB(getComputedStyle(d).color);d.remove();
+  }
+  var lightRGB=parseRGB(light);
+  if(!lightRGB){
+    var d2=document.createElement('div');d2.style.color=light;document.body.appendChild(d2);
+    lightRGB=parseRGB(getComputedStyle(d2).color);d2.remove();
+  }
+  if(!darkRGB)darkRGB={r:26,g:26,b:26};
+  if(!lightRGB)lightRGB={r:255,g:255,b:255};
+
+  var mainEl=document.querySelector('main')||document.body;
+  var els=mainEl.querySelectorAll('h1,h2,h3,h4,h5,h6,p,span,a,button,li,label,td,th,dt,dd,figcaption');
+  var fixed=0;
+  for(var i=0;i<els.length;i++){
+    var el=els[i];
+    if(el.closest('nav,header,.zappy-header,footer,.zappy-footer'))continue;
+    if(isDecorativeAccentText(el))continue;
+    if(hasImageOrVideoBackground(el))continue;
+    var inlineStyle=el.getAttribute('style')||'';
+    if(/(?:^|;\s*)color\s*:/i.test(inlineStyle))continue;
+    if(el.tagName==='FONT'&&el.hasAttribute('color'))continue;
+    var txt=el.textContent?el.textContent.trim():'';
+    if(!txt)continue;
+    var r=el.getBoundingClientRect();
+    if(r.width===0||r.height===0)continue;
+    var cs=getComputedStyle(el);
+    var col=resolveVar(cs.color);
+    var bg=effectiveBg(el);
+    var cRGB=parseRGB(col),bRGB=parseRGB(bg);
+    if(!cRGB||!bRGB)continue;
+    var ratio=contrastRatio(cRGB,bRGB);
+    if(ratio<4.5){
+      var darkC=contrastRatio(darkRGB,bRGB);
+      var lightC=contrastRatio(lightRGB,bRGB);
+      var best=darkC>=lightC?dark:light;
+      var bestRatio=Math.max(darkC,lightC);
+      if(bestRatio<4.5){
+        var blackC=contrastRatio({r:0,g:0,b:0},bRGB);
+        var whiteC=contrastRatio({r:255,g:255,b:255},bRGB);
+        best=blackC>=whiteC?'#000000':'#ffffff';
+      }
+      el.style.setProperty('color',best,'important');
+      fixed++;
+    }
+  }
+  if(fixed>0)console.log('[Contrast Fix] Fixed '+fixed+' low-contrast elements');
+}
 
     if(document.readyState==='loading'){
       document.addEventListener('DOMContentLoaded',fixContrast,{once:true});
@@ -2964,12 +3045,12 @@ window.onload = function() {
 
       var css = '';
       if (hPx !== 0 || vPx !== 0) css += sel + '{overflow:hidden!important}';
-      css += sel + '>[data-zappy-align-target]{' + t.join(';') + '}';
-      css += sel + '>[data-zappy-align-target]>*{' + c.join(';') + '}';
+      css += sel + ' [data-zappy-align-target]{' + t.join(';') + '}';
+      css += sel + ' [data-zappy-align-target]>*{' + c.join(';') + '}';
       css += '@media(max-width:768px){' +
-        sel + '>[data-zappy-align-target]{align-items:center!important;margin-left:auto!important;margin-right:auto!important;' +
+        sel + ' [data-zappy-align-target]{align-items:center!important;margin-left:auto!important;margin-right:auto!important;' +
         (vPx !== 0 ? 'transform:translateY(' + vPx + 'px)!important' : 'transform:none!important') +
-        '}' + sel + '>[data-zappy-align-target]>*{margin-left:auto!important;margin-right:auto!important}}';
+        '}' + sel + ' [data-zappy-align-target]>*{margin-left:auto!important;margin-right:auto!important}}';
 
       var s = document.createElement('style');
       s.setAttribute('data-zappy-align-style', 'true');
@@ -3276,8 +3357,19 @@ window.onload = function() {
     }
     
     function _isOOS(v) {
-      return v.stock_status === 'out_of_stock' ||
-        (v.stock_quantity !== null && v.stock_quantity !== undefined && v.stock_quantity <= 0);
+      if (!v) return true;
+      if (v.stock_status === 'out_of_stock') return true;
+      var i = v.inventory_quantity != null ? v.inventory_quantity : v.inventoryQuantity;
+      if (i != null && i !== '') {
+        var n = parseFloat(i);
+        if (isFinite(n)) return n <= 0;
+      }
+      var s = v.stock_quantity;
+      if (s != null && s !== '') {
+        var m = parseFloat(s);
+        if (isFinite(m)) return m <= 0;
+      }
+      return false;
     }
     
     function _updateVisuals() {
@@ -3296,9 +3388,11 @@ window.onload = function() {
         btn.disabled = false;
         if (matching.length === 0) {
           btn.classList.add('disabled');
+          btn.disabled = true;
         } else if (matching.every(function(v) { return _isOOS(v); })) {
           btn.classList.add('disabled');
           btn.classList.add('out-of-stock');
+          btn.disabled = true;
         }
       });
     }
@@ -3342,15 +3436,41 @@ window.onload = function() {
             }
             if (addBtn) { addBtn.disabled = false; addBtn.style.opacity = ''; addBtn.style.cursor = ''; }
           }
-          // Always update price when a variant is matched
+          // Always update price when a variant is matched.
+          //
+          // CUSTOMER-DISCOUNT AWARENESS (per-customer percentage off):
+          // When the active shopper has a customer-specific percentage discount
+          // configured (delivered into window.__zappyCustomerDiscountConfig by
+          // the storefront's customer-discount runtime), we MUST apply it here
+          // too — otherwise variant clicks in the fullscreen-preview editor
+          // overwrite the discounted price with the raw variant price, leaving
+          // merchants unable to preview "what their customer sees" while
+          // editing. This mirrors the V2 patch in
+          // githubService.ensureVariantSelectionFix that runs on the published
+          // site; the two click-handler paths must stay in sync since the
+          // editor's capture-phase handler (this one) runs first and
+          // stopImmediatePropagation()s the published-site V2 handler. Pinned
+          // by server/tests/previewVariantDisplayCustomerDiscount.test.js.
           if (priceDisplay) {
             var currency = product.currency || t.currency || '₪';
             var baseP = window.productBasePrice || parseFloat(product.price) || 0;
             var origP = window.productOriginalPrice || parseFloat(product.compare_at_price || product.original_price || 0);
             var hasSale = window.productHasSalePrice;
             var finalPrice = (v.price != null) ? parseFloat(v.price) : baseP;
+            var _cdApplied = false;
+            var _cdOrig = finalPrice;
+            if (typeof window.__zappyApplyCustomerPercentToPrice === 'function' && product && product.id) {
+              var _cdRes = window.__zappyApplyCustomerPercentToPrice(finalPrice, product.id);
+              if (_cdRes && _cdRes.applied) {
+                _cdApplied = true;
+                _cdOrig = finalPrice;
+                finalPrice = _cdRes.price;
+              }
+            }
             var html = currency + finalPrice.toFixed(2);
-            if (v.price != null) {
+            if (_cdApplied) {
+              html += ' <span class="original-price">' + currency + _cdOrig.toFixed(2) + '</span>';
+            } else if (v.price != null) {
               if (origP && origP > finalPrice) {
                 html += ' <span class="original-price">' + currency + origP.toFixed(2) + '</span>';
               }
@@ -3359,9 +3479,15 @@ window.onload = function() {
             }
             priceDisplay.innerHTML = html;
           }
-          // Update price-per-unit if the function exists
+          // Update price-per-unit if the function exists. Feed the discounted
+          // price (when a customer discount applied) so per-unit math matches
+          // the headline price.
           if (typeof updatePricePerUnitDisplay === 'function') {
             var effPrice = (v.price != null) ? parseFloat(v.price) : (window.productBasePrice || parseFloat(product.price) || 0);
+            if (typeof window.__zappyApplyCustomerPercentToPrice === 'function' && product && product.id) {
+              var _cdResUnit = window.__zappyApplyCustomerPercentToPrice(effPrice, product.id);
+              if (_cdResUnit && _cdResUnit.applied) effPrice = _cdResUnit.price;
+            }
             updatePricePerUnitDisplay(effPrice, product, t);
           }
           // Update SKU: prefer variant SKU, fall back to base product SKU.
@@ -3404,7 +3530,10 @@ window.onload = function() {
           stockDisplay.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>' + (t.inStock || 'In Stock');
         }
         if (addBtn) { addBtn.disabled = false; addBtn.style.opacity = ''; addBtn.style.cursor = ''; }
-        // Reset price to initial state (Starting at / base price)
+        // Reset price to initial state (Starting at / base price). Same
+        // customer-discount path as the variant-matched branch above; without
+        // this, partially-selecting a variant and then deselecting another
+        // wipes the customer's discount until they re-pick a full combo.
         if (priceDisplay) {
           var currency = product.currency || t.currency || '₪';
           var baseP = window.productBasePrice || parseFloat(product.price) || 0;
@@ -3412,21 +3541,50 @@ window.onload = function() {
           var hasSale = window.productHasSalePrice;
           var hasRange = window.productHasVariantPriceRange;
           var minP = window.productVariantMinPrice;
+          var _cdFn = (typeof window.__zappyApplyCustomerPercentToPrice === 'function' && product && product.id)
+            ? window.__zappyApplyCustomerPercentToPrice
+            : null;
           if (hasRange && minP != null && isFinite(minP)) {
             var startLabel = (typeof getEcomText === 'function') ? getEcomText('startingAt', t.startingAt || 'Starting at') : (t.startingAt || 'Starting at');
-            priceDisplay.textContent = startLabel + ' ' + currency + minP.toFixed(2);
+            if (_cdFn) {
+              var _cdRange = _cdFn(minP, product.id);
+              if (_cdRange && _cdRange.applied) {
+                priceDisplay.innerHTML = startLabel + ' ' + currency + _cdRange.price.toFixed(2) +
+                  ' <span class="original-price">' + currency + minP.toFixed(2) + '</span>';
+              } else {
+                priceDisplay.textContent = startLabel + ' ' + currency + minP.toFixed(2);
+              }
+            } else {
+              priceDisplay.textContent = startLabel + ' ' + currency + minP.toFixed(2);
+            }
+          } else if (_cdFn) {
+            var _cdBase = _cdFn(baseP, product.id);
+            if (_cdBase && _cdBase.applied) {
+              priceDisplay.innerHTML = currency + _cdBase.price.toFixed(2) +
+                ' <span class="original-price">' + currency + baseP.toFixed(2) + '</span>';
+            } else if (hasSale && origP > baseP) {
+              priceDisplay.innerHTML = currency + baseP.toFixed(2) +
+                ' <span class="original-price">' + currency + origP.toFixed(2) + '</span>';
+            } else {
+              priceDisplay.textContent = currency + baseP.toFixed(2);
+            }
           } else if (hasSale && origP > baseP) {
             priceDisplay.innerHTML = currency + baseP.toFixed(2) + ' <span class="original-price">' + currency + origP.toFixed(2) + '</span>';
           } else {
             priceDisplay.textContent = currency + baseP.toFixed(2);
           }
         }
-        // Reset price-per-unit
+        // Reset price-per-unit (apply customer discount when active so the
+        // per-unit math matches the headline reset price).
         if (typeof updatePricePerUnitDisplay === 'function') {
-          var hasRange = window.productHasVariantPriceRange;
-          var minP = window.productVariantMinPrice;
-          var baseP = window.productBasePrice || parseFloat(product.price) || 0;
-          var resetPrice = (hasRange && minP != null && isFinite(minP)) ? minP : baseP;
+          var hasRange2 = window.productHasVariantPriceRange;
+          var minP2 = window.productVariantMinPrice;
+          var baseP2 = window.productBasePrice || parseFloat(product.price) || 0;
+          var resetPrice = (hasRange2 && minP2 != null && isFinite(minP2)) ? minP2 : baseP2;
+          if (typeof window.__zappyApplyCustomerPercentToPrice === 'function' && product && product.id) {
+            var _cdResetUnit = window.__zappyApplyCustomerPercentToPrice(resetPrice, product.id);
+            if (_cdResetUnit && _cdResetUnit.applied) resetPrice = _cdResetUnit.price;
+          }
           updatePricePerUnitDisplay(resetPrice, product, t);
         }
         // Restore original image when no variant is fully selected
@@ -3448,6 +3606,7 @@ window.onload = function() {
       var ak = btn.getAttribute('data-attr');
       var av = btn.getAttribute('data-value');
       if (!ak || !av) return;
+      if (btn.disabled || btn.classList.contains('disabled')) return;
       
       // If already selected, do nothing (no manual deselect)
       if (selectedAttributes[ak] === av) {
@@ -4247,10 +4406,10 @@ window.onload = function() {
 })();
 
 
-/* ZAPPY_ECOM_LANGUAGE_ROUTING_RUNTIME_V6 */
+/* ZAPPY_ECOM_LANGUAGE_ROUTING_RUNTIME_V17 */
 (function() {
-  if (window.__zappyEcomLanguageRoutingRuntime) return;
-  window.__zappyEcomLanguageRoutingRuntime = true;
+  if (window.__zappyEcomLanguageRoutingRuntime >= 17) return;
+  window.__zappyEcomLanguageRoutingRuntime = 17;
 
   // Routing strategy: use path-based language URLs for ALL storefront pages
   // (including dynamic /product/:slug and /category/:slug). The publish
@@ -4355,10 +4514,11 @@ window.onload = function() {
   }
 
   function getDefaultLang() {
-    // The default language is whatever owns the path-prefix-free routes. We
-    // pin to 'he' here for the legacy Hebrew-source sites; future-proof by
-    // overriding via window.__zappyDefaultLang from the generated bundle.
-    return window.__zappyDefaultLang || 'he';
+    // Must mirror getBakedDefaultLang() so buildPath() agrees with the
+    // zappyAdditionalDefaultLanguage / zappyEcomDefaultLanguage baked at
+    // generation time. A hardcoded 'he' fallback here caused English-only
+    // sites (post language removal) to rewrite /products → /en/products.
+    return getBakedDefaultLang();
   }
 
   function buildPath(path) {
@@ -4440,9 +4600,8 @@ window.onload = function() {
     dropdowns.forEach(function(li) {
       if (!li || !li.querySelector) return;
       var submenu = li.querySelector(':scope > .sub-menu');
-      var trigger = li.querySelector(':scope > a');
+      var trigger = li.querySelector(':scope > a') || li.querySelector(':scope > .menu-group-title');
       if (!submenu || !trigger) return;
-      if (li.querySelector(':scope > .mobile-submenu-toggle')) return;
 
       // Hide the inline SVG chevron on mobile so we don't render two chevrons.
       var inlineArrow = trigger.querySelector('svg.dropdown-arrow');
@@ -4451,12 +4610,19 @@ window.onload = function() {
         inlineArrow.setAttribute('data-zappy-mobile-hidden', '1');
       }
 
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'mobile-submenu-toggle';
-      btn.setAttribute('aria-label', 'Toggle submenu');
-      btn.setAttribute('aria-expanded', 'false');
+      var btn = li.querySelector(':scope > .mobile-submenu-toggle');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mobile-submenu-toggle';
+        btn.setAttribute('aria-label', 'Toggle submenu');
+        trigger.insertAdjacentElement('afterend', btn);
+      }
+      btn.setAttribute('aria-expanded', submenu.classList.contains('mobile-expanded') ? 'true' : 'false');
       btn.setAttribute('data-zappy-runtime', 'ecom-routing');
+
+      if (btn.getAttribute('data-zappy-runtime-bound') === '1') return;
+      btn.setAttribute('data-zappy-runtime-bound', '1');
 
       btn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -4478,10 +4644,154 @@ window.onload = function() {
         submenu.classList.toggle('mobile-expanded', willOpen);
         btn.classList.toggle('expanded', willOpen);
         btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        normalizeMobileSubmenuLayout();
       }, true);
-
-      trigger.insertAdjacentElement('afterend', btn);
     });
+    normalizeMobileSubmenuLayout();
+  }
+
+  function setImportant(el, prop, value) {
+    if (!el || !el.style || !el.style.setProperty) return;
+    el.style.setProperty(prop, value, 'important');
+  }
+
+  function normalizeMobileSubmenuLayout() {
+    var isMobile = window.matchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
+    if (!isMobile) return;
+    var isRtl = (document.documentElement.getAttribute('dir') || document.body.getAttribute('dir')) === 'rtl';
+    document.querySelectorAll('.nav-menu li:has(> .sub-menu), nav li:has(> .sub-menu), .navbar li:has(> .sub-menu)').forEach(function(li) {
+      var submenu = li.querySelector(':scope > .sub-menu');
+      var trigger = li.querySelector(':scope > a') || li.querySelector(':scope > .menu-group-title');
+      var btn = li.querySelector(':scope > .mobile-submenu-toggle');
+      if (!submenu || !trigger || !btn) return;
+
+      // Keep the layout direction LTR even on RTL pages. Flexbox otherwise
+      // places the full-width submenu from the right edge and clips it outside
+      // the mobile drawer; text direction is restored on the children below.
+      setImportant(li, 'direction', 'ltr');
+      setImportant(li, 'display', 'flex');
+      setImportant(li, 'flex-wrap', 'wrap');
+      setImportant(li, 'align-items', 'flex-start');
+      setImportant(li, 'width', '100%');
+      setImportant(li, 'max-width', '100%');
+      setImportant(li, 'min-width', '0');
+      setImportant(li, 'overflow', 'visible');
+      setImportant(li, 'box-sizing', 'border-box');
+
+      setImportant(trigger, 'display', 'block');
+      setImportant(trigger, 'direction', isRtl ? 'rtl' : 'ltr');
+      setImportant(trigger, 'flex', '1 1 0');
+      setImportant(trigger, 'min-width', '0');
+      setImportant(trigger, 'max-width', 'calc(100% - 48px)');
+      setImportant(trigger, 'width', 'auto');
+      setImportant(trigger, 'box-sizing', 'border-box');
+      setImportant(trigger, 'white-space', 'normal');
+      setImportant(trigger, 'overflow-wrap', 'anywhere');
+      setImportant(trigger, 'padding-inline', '8px');
+      setImportant(trigger, 'text-align', isRtl ? 'right' : 'left');
+      setImportant(trigger, 'order', isRtl ? '2' : '1');
+
+      setImportant(btn, 'display', 'flex');
+      setImportant(btn, 'position', 'static');
+      setImportant(btn, 'flex', '0 0 48px');
+      setImportant(btn, 'width', '48px');
+      setImportant(btn, 'height', '44px');
+      setImportant(btn, 'min-height', '44px');
+      setImportant(btn, 'align-items', 'center');
+      setImportant(btn, 'justify-content', 'center');
+      setImportant(btn, 'margin', '0');
+      setImportant(btn, 'padding', '0');
+      setImportant(btn, 'background', 'transparent');
+      setImportant(btn, 'border', 'none');
+      setImportant(btn, 'order', isRtl ? '1' : '2');
+
+      setImportant(submenu, 'order', '3');
+      setImportant(submenu, 'direction', isRtl ? 'rtl' : 'ltr');
+      setImportant(submenu, 'text-align', isRtl ? 'right' : 'left');
+      setImportant(submenu, 'flex', '0 0 100%');
+      setImportant(submenu, 'width', '100%');
+      setImportant(submenu, 'min-width', '0');
+      setImportant(submenu, 'max-width', '100%');
+      setImportant(submenu, 'box-sizing', 'border-box');
+      setImportant(submenu, 'margin', '0');
+      setImportant(submenu, 'transform', 'none');
+      setImportant(submenu, 'left', 'auto');
+      setImportant(submenu, 'right', 'auto');
+      setImportant(submenu, 'inset-inline-start', 'auto');
+      setImportant(submenu, 'inset-inline-end', 'auto');
+      if (submenu.classList.contains('mobile-expanded')) {
+        setImportant(submenu, 'padding', '8px 0');
+      }
+
+      submenu.querySelectorAll('a, .menu-group-title').forEach(function(item) {
+        var parentItem = item.closest && item.closest('li');
+        setImportant(item, 'display', 'block');
+        setImportant(item, 'direction', isRtl ? 'rtl' : 'ltr');
+        setImportant(item, 'width', '100%');
+        setImportant(item, 'min-width', '0');
+        setImportant(item, 'max-width', '100%');
+        setImportant(item, 'box-sizing', 'border-box');
+        setImportant(item, 'white-space', 'normal');
+        setImportant(item, 'overflow-wrap', 'anywhere');
+        setImportant(item, 'padding', '10px 8px');
+        setImportant(item, 'text-align', isRtl ? 'right' : 'left');
+        if (parentItem && parentItem.classList && parentItem.classList.contains('zappy-nav-parent')) {
+          setImportant(item, 'font-weight', '700');
+        }
+        if (parentItem && parentItem.classList && parentItem.classList.contains('zappy-nav-child')) {
+          setImportant(item, 'padding-left', isRtl ? '16px' : '36px');
+          setImportant(item, 'padding-right', isRtl ? '36px' : '16px');
+          setImportant(item, 'font-size', '0.94em');
+          setImportant(item, 'opacity', '0.85');
+        }
+      });
+    });
+  }
+
+  function scheduleMobileSubmenuRefresh() {
+    [0, 60, 160, 320, 700, 1200, 2200].forEach(function(delay) {
+      setTimeout(function() {
+        ensureMobileSubmenuToggles();
+        normalizeMobileSubmenuLayout();
+      }, delay);
+    });
+  }
+
+  function installMobileMenuRefreshHooks() {
+    if (window.__zappyMobileSubmenuRefreshHooksInstalled) return;
+    window.__zappyMobileSubmenuRefreshHooksInstalled = true;
+
+    document.addEventListener('click', function(e) {
+      var target = e.target && e.target.closest && e.target.closest(
+        '.mobile-toggle,.menu-toggle,.hamburger,.navbar-toggle,.mobile-submenu-toggle,[aria-label="תפריט"],[aria-label="Menu"],[aria-label="menu"]'
+      );
+      if (target) scheduleMobileSubmenuRefresh();
+    }, true);
+
+    if (!window.MutationObserver) return;
+    var observeNav = function() {
+      var nav = document.getElementById('navMenu') || document.querySelector('.nav-menu');
+      if (!nav || nav.getAttribute('data-zappy-mobile-submenu-observed') === '1') return;
+      nav.setAttribute('data-zappy-mobile-submenu-observed', '1');
+      var handleMutations = function(mutations) {
+        var shouldRefresh = mutations.some(function(mutation) {
+          if (mutation.type === 'attributes') return mutation.attributeName === 'class' || mutation.attributeName === 'style';
+          return Array.prototype.some.call(mutation.addedNodes || [], function(node) {
+            return node.nodeType === 1 && (
+              node.classList && node.classList.contains('mobile-submenu-toggle')
+              || node.querySelector && node.querySelector('.mobile-submenu-toggle')
+            );
+          });
+        });
+        if (shouldRefresh) scheduleMobileSubmenuRefresh();
+      };
+      var navObserver = new MutationObserver(handleMutations);
+      navObserver.observe(nav, { attributes: true, attributeFilter: ['class', 'style'], childList: true });
+      var childObserver = new MutationObserver(handleMutations);
+      childObserver.observe(nav, { childList: true, subtree: true });
+    };
+    observeNav();
+    setTimeout(observeNav, 500);
   }
 
   var __zappyMobileSubmenuResizeTimer = null;
@@ -4506,37 +4816,54 @@ window.onload = function() {
   // a separate CSS ensure step makes us robust to clean-css comment stripping +
   // declaration merging that was eating the standalone CSS injection.
   function ensureRuntimeCssInjected() {
-    if (document.getElementById('zappy-ecom-routing-runtime-css')) return;
+    var existing = document.getElementById('zappy-ecom-routing-runtime-css');
+    if (existing && existing.getAttribute('data-v') === '20') return;
+    if (existing) existing.remove();
     var style = document.createElement('style');
     style.id = 'zappy-ecom-routing-runtime-css';
     style.setAttribute('data-zappy-runtime', 'ecom-routing');
+    style.setAttribute('data-v', '20');
     style.textContent =
       '@media (min-width: 769px){' +
-        'html[dir="ltr"] .nav-container > .nav-brand,body[dir="ltr"] .nav-container > .nav-brand{order:-1!important}' +
-        'html[dir="ltr"] .nav-container > .nav-menu,body[dir="ltr"] .nav-container > .nav-menu{order:1!important;margin-inline-start:auto!important;margin-inline-end:24px!important;flex:0 1 auto!important}' +
-        'html[dir="ltr"] .nav-container > .lang-switcher,body[dir="ltr"] .nav-container > .lang-switcher,html[dir="ltr"] .nav-container > .nav-ecommerce-icons,body[dir="ltr"] .nav-container > .nav-ecommerce-icons{order:2!important}' +
-        'html[dir="ltr"] .nav-container > .nav-ecommerce-icons.nav-icons-left,body[dir="ltr"] .nav-container > .nav-ecommerce-icons.nav-icons-left{margin-inline-start:0!important}' +
+        'html[dir="ltr"] .nav-container > .nav-brand,body[dir="ltr"] .nav-container > .nav-brand,html[dir="ltr"] .nav-right-group > .nav-brand,body[dir="ltr"] .nav-right-group > .nav-brand{order:-1!important}' +
+        'html[dir="ltr"] .nav-container > .nav-menu,body[dir="ltr"] .nav-container > .nav-menu,html[dir="ltr"] .nav-right-group > .nav-menu,body[dir="ltr"] .nav-right-group > .nav-menu{order:1!important;margin-inline-start:0!important;margin-inline-end:24px!important;flex:1 1 0!important;min-width:0!important;max-height:44px!important;overflow:visible!important;flex-wrap:wrap!important;align-items:center!important;align-content:flex-start!important;row-gap:4px!important}' +
+        'html[dir="ltr"] .nav-container > .nav-menu > li,body[dir="ltr"] .nav-container > .nav-menu > li,html[dir="ltr"] .nav-right-group > .nav-menu > li,body[dir="ltr"] .nav-right-group > .nav-menu > li{flex:0 0 auto!important}' +
+        'html[dir="ltr"] .nav-container > .lang-switcher,body[dir="ltr"] .nav-container > .lang-switcher,html[dir="ltr"] .nav-container > .nav-ecommerce-icons,body[dir="ltr"] .nav-container > .nav-ecommerce-icons,html[dir="ltr"] .nav-right-group > .lang-switcher,body[dir="ltr"] .nav-right-group > .lang-switcher,html[dir="ltr"] .nav-right-group > .nav-ecommerce-icons,body[dir="ltr"] .nav-right-group > .nav-ecommerce-icons{order:2!important;flex:0 0 auto!important;min-width:max-content!important}' +
+        'html[dir="ltr"] .nav-container > .nav-ecommerce-icons.nav-icons-left,body[dir="ltr"] .nav-container > .nav-ecommerce-icons.nav-icons-left,html[dir="ltr"] .nav-right-group > .nav-ecommerce-icons.nav-icons-left,body[dir="ltr"] .nav-right-group > .nav-ecommerce-icons.nav-icons-left{margin-inline-start:auto!important;flex:0 0 auto!important;min-width:max-content!important}' +
+        'html[dir="rtl"] .nav-container > .nav-menu,body[dir="rtl"] .nav-container > .nav-menu,html[dir="rtl"] .nav-right-group > .nav-menu,body[dir="rtl"] .nav-right-group > .nav-menu{flex:1 1 0!important;min-width:0!important;max-height:44px!important;overflow:visible!important;flex-wrap:wrap!important;align-items:center!important;align-content:flex-start!important;row-gap:4px!important}' +
+        'html[dir="rtl"] .nav-container > .nav-menu > li,body[dir="rtl"] .nav-container > .nav-menu > li,html[dir="rtl"] .nav-right-group > .nav-menu > li,body[dir="rtl"] .nav-right-group > .nav-menu > li{flex:0 0 auto!important}' +
+        'html[dir="rtl"] .nav-container > .nav-ecommerce-icons,body[dir="rtl"] .nav-container > .nav-ecommerce-icons,html[dir="rtl"] .nav-right-group > .nav-ecommerce-icons,body[dir="rtl"] .nav-right-group > .nav-ecommerce-icons,html[dir="rtl"] .nav-container > .nav-ecommerce-icons.nav-icons-left,body[dir="rtl"] .nav-container > .nav-ecommerce-icons.nav-icons-left,html[dir="rtl"] .nav-right-group > .nav-ecommerce-icons.nav-icons-left,body[dir="rtl"] .nav-right-group > .nav-ecommerce-icons.nav-icons-left{flex:0 0 auto!important;min-width:max-content!important}' +
+        'html[dir="ltr"] .nav-search-btn,body[dir="ltr"] .nav-search-btn{position:absolute!important;left:auto!important;right:4px!important}' +
+        'html[dir="ltr"] .nav-search-input,body[dir="ltr"] .nav-search-input,html[dir="ltr"] .nav-search-box input,body[dir="ltr"] .nav-search-box input{direction:ltr!important;text-align:left!important;padding-left:14px!important;padding-right:40px!important}' +
+        '.nav-right-group>.nav-menu,.nav-container>.nav-menu{min-width:0!important;flex-shrink:1!important}' +
         'html[dir="ltr"] .zappy-products-dropdown > a .dropdown-arrow,body[dir="ltr"] .zappy-products-dropdown > a .dropdown-arrow{display:inline-block!important;flex:0 0 auto!important;margin-inline-start:6px!important}' +
         'html[dir="ltr"] .zappy-catalog-menu,html[dir="ltr"] .zappy-catalog-menu .catalog-menu-container,html[dir="ltr"] .zappy-catalog-menu .catalog-menu-categories{direction:ltr!important}' +
         'html[dir="ltr"] .zappy-catalog-menu .catalog-menu-container{align-items:flex-start!important}' +
         'html[dir="ltr"] .zappy-catalog-menu .catalog-menu-categories{display:flex!important;align-items:flex-start!important;align-content:flex-start!important;row-gap:4px!important;column-gap:2px!important}' +
         'html[dir="ltr"] .zappy-catalog-menu .catalog-menu-item{padding-inline:10px!important}' +
         'html[dir="ltr"] .zappy-catalog-menu .catalog-menu-all{margin-top:0!important;align-self:flex-start!important}' +
+        '.nav-menu .zappy-products-dropdown>.sub-menu,#navMenu .zappy-products-dropdown>.sub-menu{left:50%!important;right:auto!important;transform:translateX(-50%) translateY(8px)!important}' +
+        '.nav-menu .zappy-products-dropdown:hover>.sub-menu,#navMenu .zappy-products-dropdown:hover>.sub-menu,.nav-menu .zappy-products-dropdown:focus-within>.sub-menu,#navMenu .zappy-products-dropdown:focus-within>.sub-menu{transform:translateX(-50%) translateY(0)!important}' +
       '}' +
       '@media (max-width:768px){' +
-        '.navbar .zappy-products-dropdown,nav.navbar .zappy-products-dropdown,.zappy-products-dropdown{position:relative!important}' +
-        // padding-inline-end is a logical property: it resolves to right padding
-        // in LTR and left padding in RTL — exactly the side where the absolute
-        // toggle button lives. A separate RTL override would invert that and
-        // push the link text inward, which is the indentation bug we hit.
-        '.navbar .zappy-products-dropdown > a,nav.navbar .zappy-products-dropdown > a,.zappy-products-dropdown > a{width:100%!important;min-width:0!important;padding-inline-end:56px!important;padding-inline-start:0!important;box-sizing:border-box!important}' +
-        '.navbar .zappy-products-dropdown > .mobile-submenu-toggle,nav.navbar .zappy-products-dropdown > .mobile-submenu-toggle,.zappy-products-dropdown > .mobile-submenu-toggle{display:flex!important;position:absolute!important;top:0!important;inset-inline-end:4px!important;inset-inline-start:auto!important;width:48px!important;height:44px!important;min-height:44px!important;align-items:center!important;justify-content:center!important;z-index:5!important;pointer-events:auto!important;margin:0!important;padding:0!important;background:transparent!important;border:none!important}' +
+        '.nav-menu li:has(.sub-menu),.navbar li:has(.sub-menu),nav li:has(.sub-menu){direction:ltr!important;display:flex!important;flex-wrap:wrap!important;align-items:flex-start!important;max-width:100%!important;width:100%!important;overflow:visible!important;box-sizing:border-box!important}' +
+        '.nav-menu li:has(.sub-menu)>a,.navbar li:has(.sub-menu)>a,nav li:has(.sub-menu)>a,li:has(.sub-menu)>.menu-group-title{display:block!important;flex:1 1 0!important;order:1!important;width:auto!important;min-width:0!important;max-width:calc(100% - 48px)!important;padding-inline:8px!important;box-sizing:border-box!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.35!important;text-align:left!important;direction:ltr!important}' +
+        'html[dir="rtl"] .nav-menu li:has(.sub-menu)>a,body[dir="rtl"] .nav-menu li:has(.sub-menu)>a,html[dir="rtl"] .navbar li:has(.sub-menu)>a,body[dir="rtl"] .navbar li:has(.sub-menu)>a,html[dir="rtl"] nav li:has(.sub-menu)>a,body[dir="rtl"] nav li:has(.sub-menu)>a,html[dir="rtl"] li:has(.sub-menu)>.menu-group-title,body[dir="rtl"] li:has(.sub-menu)>.menu-group-title{direction:rtl!important;text-align:right!important;order:2!important}' +
+        '.nav-menu li:has(.sub-menu)>.mobile-submenu-toggle,.navbar li:has(.sub-menu)>.mobile-submenu-toggle,nav li:has(.sub-menu)>.mobile-submenu-toggle{display:flex!important;position:static!important;flex:0 0 48px!important;order:2!important;width:48px!important;height:44px!important;min-height:44px!important;align-items:center!important;justify-content:center!important;z-index:5!important;pointer-events:auto!important;margin:0!important;padding:0!important;background:transparent!important;border:none!important}' +
+        'html[dir="rtl"] .nav-menu li:has(.sub-menu)>.mobile-submenu-toggle,body[dir="rtl"] .nav-menu li:has(.sub-menu)>.mobile-submenu-toggle,html[dir="rtl"] .navbar li:has(.sub-menu)>.mobile-submenu-toggle,body[dir="rtl"] .navbar li:has(.sub-menu)>.mobile-submenu-toggle,html[dir="rtl"] nav li:has(.sub-menu)>.mobile-submenu-toggle,body[dir="rtl"] nav li:has(.sub-menu)>.mobile-submenu-toggle{order:1!important}' +
+        '.nav-menu li:has(.sub-menu)>.sub-menu,.navbar li:has(.sub-menu)>.sub-menu,nav li:has(.sub-menu)>.sub-menu{order:3!important;flex:0 0 100%!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;margin:0!important;transform:none!important;left:auto!important;right:auto!important;inset-inline-start:auto!important;inset-inline-end:auto!important}' +
+        '.nav-menu .sub-menu.mobile-expanded,.navbar .sub-menu.mobile-expanded,nav .sub-menu.mobile-expanded{padding:8px 0!important}' +
+        '.sub-menu a,.sub-menu .menu-group-title{display:block!important;width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;padding:10px 8px!important}' +
+        '.zappy-products-dropdown>.sub-menu .zappy-nav-parent>a,.zappy-products-dropdown>.sub-menu .zappy-nav-parent>.menu-group-title{font-weight:700!important}' +
+        '.zappy-products-dropdown>.sub-menu .zappy-nav-child>a,.zappy-products-dropdown>.sub-menu .zappy-nav-child>.menu-group-title{padding-left:36px!important;padding-right:16px!important;font-size:.94em!important;opacity:.85!important}' +
+        'html[dir="rtl"] .zappy-products-dropdown>.sub-menu .zappy-nav-child>a,body[dir="rtl"] .zappy-products-dropdown>.sub-menu .zappy-nav-child>a,html[dir="rtl"] .zappy-products-dropdown>.sub-menu .zappy-nav-child>.menu-group-title,body[dir="rtl"] .zappy-products-dropdown>.sub-menu .zappy-nav-child>.menu-group-title{padding-left:16px!important;padding-right:36px!important}' +
       '}';
     (document.head || document.documentElement).appendChild(style);
   }
 
   function patch() {
     ensureRuntimeCssInjected();
+    installMobileMenuRefreshHooks();
     patchLinks(document);
     ensureProductsChevron();
     ensureMobileSubmenuToggles();
@@ -4564,4 +4891,332 @@ window.onload = function() {
   }).observe(document.documentElement, { childList: true, subtree: true });
   setTimeout(patch, 250);
   setTimeout(patch, 1500);
+})();
+/* ZAPPY_CHECKOUT_FOCUS_UX_V2 */
+(function(){
+  if (window.__zappyCheckoutFocusUX >= 2) return;
+  window.__zappyCheckoutFocusUX = 2;
+
+  var CSS =
+    'body.zappy-cart-open #cc-main,body.zappy-cart-open #zappy-cookie-banner{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page #zappy-cookie-banner{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-links,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-cta,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-right-group .nav-menu,' +
+    'body.zappy-checkout-page .lang-switcher,' +
+    'body.zappy-checkout-page .nav-icons-right,' +
+    'body.zappy-checkout-page .nav-search-box,' +
+    'body.zappy-checkout-page .nav-search-toggle,' +
+    'body.zappy-checkout-page #mobile-search-toggle,' +
+    'body.zappy-checkout-page .mobile-search-panel,' +
+    'body.zappy-checkout-page .login-link.nav-login,' +
+    'body.zappy-checkout-page .nav-ecommerce-icons>*:not(.cart-link),' +
+    'body.zappy-checkout-page .mobile-hamburger-btn,' +
+    'body.zappy-checkout-page .mobile-toggle,' +
+    'body.zappy-checkout-page .hamburger,' +
+    'body.zappy-checkout-page .menu-toggle,' +
+    'body.zappy-checkout-page #mobileToggle,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .phone-header-btn,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .mobile-close-btn{display:none!important;visibility:hidden!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-container{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important}' +
+    'body.zappy-checkout-page .nav-brand,body.zappy-checkout-page .cart-link.nav-cart,body.zappy-checkout-page #cart-drawer-toggle{display:flex!important;visibility:visible!important;pointer-events:auto!important}' +
+    'body.zappy-checkout-page .nav-ecommerce-icons{display:inline-flex!important;align-items:center!important;margin-inline-start:auto!important}' +
+    '@media (max-width:768px){body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu,body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu.active,body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu.open{display:none!important;visibility:hidden!important}}' +
+    'body.zappy-checkout-page .site-footer>*:not(.footer-bottom),body.zappy-checkout-page footer.site-footer>*:not(.footer-bottom){display:none!important;visibility:hidden!important}' +
+    'body.zappy-checkout-page .site-footer .footer-bottom,body.zappy-checkout-page footer.site-footer .footer-bottom{display:block!important;visibility:visible!important}' +
+    'body.zappy-checkout-page .site-footer:not(:has(.footer-bottom)),body.zappy-checkout-page footer.site-footer:not(:has(.footer-bottom)){display:none!important}';
+
+  function resolvePagePath() {
+    var pagePath = window.location.pathname || '';
+    try {
+      var pageParam = new URLSearchParams(window.location.search).get('page');
+      if (pageParam) pagePath = pageParam;
+    } catch (e) {}
+    return pagePath.toLowerCase();
+  }
+
+  function applyCheckoutFocusState() {
+    var path = resolvePagePath();
+    var isCheckoutPage = path.indexOf('/checkout') !== -1;
+    var isFocusedPage = (
+      path.indexOf('/product/') !== -1 ||
+      path === '/product' ||
+      path.indexOf('/cart') !== -1 ||
+      isCheckoutPage ||
+      path.indexOf('/order-success') !== -1 ||
+      path.indexOf('/order') !== -1
+    );
+    document.body.classList.toggle('zappy-focused-page', isFocusedPage);
+    document.body.classList.toggle('zappy-checkout-page', isCheckoutPage);
+  }
+
+  function injectCss() {
+    var existing = document.getElementById('zappy-checkout-focus-ux-css');
+    if (existing && existing.getAttribute('data-v') === '2') return;
+    if (existing) existing.remove();
+    var style = document.createElement('style');
+    style.id = 'zappy-checkout-focus-ux-css';
+    style.setAttribute('data-zappy-runtime', 'checkout-focus');
+    style.setAttribute('data-v', '2');
+    style.textContent = CSS;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  function syncCartOpenFromDom() {
+    var drawer = document.getElementById('cart-drawer');
+    var overlay = document.getElementById('cart-drawer-overlay');
+    var isOpen = (drawer && drawer.classList.contains('active')) ||
+      (overlay && overlay.classList.contains('active'));
+    document.body.classList.toggle('zappy-cart-open', !!isOpen);
+  }
+
+  function watchCartDrawer() {
+    syncCartOpenFromDom();
+    var obs = new MutationObserver(function() { syncCartOpenFromDom(); });
+    ['cart-drawer', 'cart-drawer-overlay'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) obs.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
+    document.addEventListener('click', function(e) {
+      var t = e.target && e.target.closest
+        ? e.target.closest('#cart-drawer-toggle,.cart-link.nav-cart,a.nav-cart,[data-cart-toggle],.cart-drawer-close,#cart-drawer-overlay')
+        : null;
+      if (t) setTimeout(syncCartOpenFromDom, 0);
+    }, true);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') setTimeout(syncCartOpenFromDom, 0);
+    });
+  }
+
+  function boot() {
+    injectCss();
+    applyCheckoutFocusState();
+    watchCartDrawer();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  window.addEventListener('popstate', function() { setTimeout(applyCheckoutFocusState, 0); });
+  setTimeout(boot, 250);
+  setTimeout(boot, 1500);
+})();
+
+
+/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_RUNTIME */
+/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_RUNTIME_V2 */
+(function(){
+  try {
+    function injectMobileNavIconAlignmentFix() {
+      if (document.getElementById('zappy-mobile-nav-icon-alignment-fix')) return;
+      var style = document.createElement('style');
+      style.id = 'zappy-mobile-nav-icon-alignment-fix';
+      style.textContent = "\n\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX */\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX_V3 */\n/* The mobile hamburger / phone buttons are absolutely positioned. Keep the\n   navbar itself as a non-collapsing containing block so auto-margin centering\n   stays aligned even when generated mobile CSS moves every nav child out of flow. */\n@media (max-width: 768px) {\n  .navbar,\n  nav.navbar {\n    min-height: 70px !important;\n  }\n\n  /* Some generated RTL nav CSS sets both left:50% and right:50% on the\n     absolute .nav-brand. That collapses it to 0px wide, so the logo flows\n     left from the center instead of being centered on it. */\n  .navbar .nav-brand,\n  nav.navbar .nav-brand,\n  html[dir=\"rtl\"] .navbar .nav-brand,\n  html[dir=\"rtl\"] nav.navbar .nav-brand,\n  html[lang=\"he\"] .navbar .nav-brand,\n  html[lang=\"he\"] nav.navbar .nav-brand,\n  html[lang=\"ar\"] .navbar .nav-brand,\n  html[lang=\"ar\"] nav.navbar .nav-brand {\n    position: absolute !important;\n    left: 50% !important;\n    right: auto !important;\n    top: 50% !important;\n    width: auto !important;\n    min-width: max-content !important;\n    max-width: calc(100% - 168px) !important;\n    transform: translate(-50%, -50%) !important;\n    margin: 0 !important;\n    text-align: center !important;\n    justify-content: center !important;\n  }\n\n  .navbar .nav-brand .logo-link,\n  nav.navbar .nav-brand .logo-link,\n  .navbar .nav-brand a,\n  nav.navbar .nav-brand a {\n    display: inline-flex !important;\n    justify-content: center !important;\n    align-items: center !important;\n    margin-left: auto !important;\n    margin-right: auto !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle,\n  .navbar > .phone-header-btn,\n  nav.navbar > .phone-header-btn,\n  .navbar .phone-header-btn,\n  nav.navbar .phone-header-btn {\n    position: absolute !important;\n    top: 0 !important;\n    bottom: 0 !important;\n    transform: none !important;\n    margin-top: auto !important;\n    margin-bottom: auto !important;\n    align-self: center !important;\n    align-items: center !important;\n    justify-content: center !important;\n    line-height: 0 !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle {\n    display: flex !important;\n  }\n\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar .phone-header-btn {\n    display: flex !important;\n  }\n\n  html[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  body[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] header .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] nav .phone-header-btn {\n    display: none !important;\n    visibility: hidden !important;\n    width: 0 !important;\n    height: 0 !important;\n    min-width: 0 !important;\n    overflow: hidden !important;\n  }\n}\n";
+      document.head.appendChild(style);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', injectMobileNavIconAlignmentFix);
+    } else {
+      injectMobileNavIconAlignmentFix();
+    }
+    window.addEventListener('load', injectMobileNavIconAlignmentFix);
+    setTimeout(injectMobileNavIconAlignmentFix, 250);
+    setTimeout(injectMobileNavIconAlignmentFix, 1000);
+  } catch (e) {}
+})();
+
+/* ZAPPY_CUSTOMER_DISCOUNT_DELAYED_REFRESH_V1 */
+
+
+/* ZAPPY_CUSTOMER_DISCOUNT_RUNTIME_V1 */
+;(function() {
+  if (window.__zappyCustomerDiscountRuntimeV1) return;
+  window.__zappyCustomerDiscountRuntimeV1 = true;
+
+  function apiUrl(path) {
+    var base = window.ZAPPY_API_BASE || '';
+    if (base.endsWith('/')) base = base.slice(0, -1);
+    return base + path;
+  }
+
+  function getDiscount(productId) {
+    var cfg = window.__zappyCustomerDiscountConfig;
+    if (!cfg || !cfg.discountPercent) return null;
+    var excluded = cfg.excludedProductIds || [];
+    if (excluded.indexOf(productId) !== -1) return null;
+    return cfg;
+  }
+
+  function applyPercent(basePrice, productId) {
+    var d = getDiscount(productId);
+    if (!d || !Number.isFinite(basePrice) || basePrice <= 0) {
+      return { price: basePrice, applied: false };
+    }
+    var discounted = basePrice - (basePrice * parseFloat(d.discountPercent) / 100);
+    if (!Number.isFinite(discounted) || discounted >= basePrice) {
+      return { price: basePrice, applied: false };
+    }
+    return { price: discounted, applied: true, originalPrice: basePrice };
+  }
+
+  window.__zappyApplyCustomerPercentToPrice = applyPercent;
+
+  function currencyFromText(text) {
+    var m = String(text || '').match(/[₪$€£]/);
+    return m ? m[0] : '₪';
+  }
+
+  function isPriceAlreadyCustomerDiscounted(priceEl, productId) {
+    if (!priceEl) return true;
+    if (priceEl.getAttribute('data-customer-discount-applied')) return true;
+    // Sale / seasonal strikethrough also uses .original-price — only skip when the
+    // visible price already matches a customer discount computed from the
+    // strikethrough base (generator path that omits data-customer-discount-applied).
+    var origEl = priceEl.querySelector('.original-price');
+    if (!origEl || !productId) return false;
+    var raw = priceEl.textContent || '';
+    var nums = raw.match(/[\d,.]+/g);
+    if (!nums || !nums.length) return false;
+    var displayed = parseFloat(nums[0].replace(/,/g, ''));
+    var origNums = (origEl.textContent || '').match(/[\d,.]+/g);
+    if (!origNums || !origNums.length) return false;
+    var preCustomerBase = parseFloat(origNums[origNums.length - 1].replace(/,/g, ''));
+    if (!Number.isFinite(displayed) || !Number.isFinite(preCustomerBase)) return false;
+    var adj = applyPercent(preCustomerBase, productId);
+    if (!adj.applied) return false;
+    return Math.abs(displayed - adj.price) < 0.02;
+  }
+
+  function applyPricesToCards() {
+    if (!window.__zappyCustomerDiscountConfig || !window.__zappyCustomerDiscountConfig.discountPercent) return;
+    document.querySelectorAll('[data-product-id]').forEach(function(card) {
+      var pid = card.getAttribute('data-product-id');
+      var priceEl = card.querySelector('.price') || card.querySelector('.product-price');
+      if (!priceEl || isPriceAlreadyCustomerDiscounted(priceEl, pid)) return;
+      var raw = priceEl.textContent || '';
+      var starting = /(?:Starting at|החל מ)/i.test(raw);
+      var nums = raw.match(/[\d,.]+/g);
+      if (!nums || !nums.length) return;
+      var base = parseFloat(nums[0].replace(/,/g, ''));
+      if (!Number.isFinite(base) || base <= 0) return;
+      var adj = applyPercent(base, pid);
+      if (!adj.applied) return;
+      var sym = currencyFromText(raw);
+      if (starting) {
+        var prefix = raw.match(/(?:Starting at|החל מ)/i);
+        var label = prefix ? prefix[0] : 'Starting at';
+        priceEl.innerHTML = label + ' ' + sym + adj.price.toFixed(2) + ' <span class="original-price">' + sym + base.toFixed(2) + '</span>';
+      } else {
+        priceEl.innerHTML = sym + adj.price.toFixed(2) + ' <span class="original-price">' + sym + base.toFixed(2) + '</span>';
+      }
+      priceEl.setAttribute('data-customer-discount-applied', '1');
+    });
+  }
+
+  function refreshProductDetailPrice() {
+    if (!window.currentProduct || !window.__zappyCustomerDiscountConfig) return;
+    if (typeof window.__zappyUpdateVariantUI === 'function' && window.productTranslations) {
+      window.__zappyUpdateVariantUI(window.selectedVariant || null, window.currentProduct, window.productTranslations, {});
+      return;
+    }
+    var priceEl = document.getElementById('product-price-display');
+    if (!priceEl || isPriceAlreadyCustomerDiscounted(priceEl, window.currentProduct.id)) return;
+    var raw = priceEl.textContent || '';
+    var starting = /(?:Starting at|החל מ)/i.test(raw);
+    var nums = raw.match(/[\d,.]+/g);
+    if (!nums || !nums.length) return;
+    var base = parseFloat((starting && nums.length > 1 ? nums[nums.length - 1] : nums[0]).replace(/,/g, ''));
+    if (!Number.isFinite(base) || base <= 0) return;
+    var adj = applyPercent(base, window.currentProduct.id);
+    if (!adj.applied) return;
+    var sym = currencyFromText(raw);
+    if (starting) {
+      var prefix = raw.match(/(?:Starting at|החל מ)/i);
+      var label = prefix ? prefix[0] : 'Starting at';
+      priceEl.innerHTML = label + ' ' + sym + adj.price.toFixed(2) + ' <span class="original-price">' + sym + base.toFixed(2) + '</span>';
+    } else {
+      priceEl.innerHTML = sym + adj.price.toFixed(2) + ' <span class="original-price">' + sym + base.toFixed(2) + '</span>';
+    }
+    priceEl.setAttribute('data-customer-discount-applied', '1');
+  }
+
+  async function syncCustomerDiscount() {
+    if (typeof window.__zappyFetchCustomerDiscount === 'function') {
+      try {
+        await window.__zappyFetchCustomerDiscount();
+      } catch (e) {
+        console.warn('[ZAPPY] Customer discount runtime delegate failed', e);
+      }
+      applyPricesToCards();
+      refreshProductDetailPrice();
+      if (typeof window.loadProducts === 'function') {
+        try { window.loadProducts(); } catch (e) {}
+      }
+      if (typeof window.__zappyScheduleDynamicProductGridsDiscountRefresh === 'function') {
+        try { window.__zappyScheduleDynamicProductGridsDiscountRefresh(); } catch (e) {}
+      }
+      [800, 2500].forEach(function(ms) {
+        setTimeout(refreshProductDetailPrice, ms);
+      });
+      return;
+    }
+    var wid = window.ZAPPY_WEBSITE_ID;
+    if (!wid) return;
+    var token = localStorage.getItem('zappy_customer_token_' + wid);
+    if (!token) {
+      window.__zappyCustomerDiscountConfig = null;
+      return;
+    }
+    try {
+      var res = await fetch(apiUrl('/api/ecommerce/storefront/customer-discount?websiteId=' + encodeURIComponent(wid)), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      var data = await res.json();
+      if (data.success && data.data && data.data.discountPercent > 0) {
+        window.__zappyCustomerDiscountConfig = data.data;
+      } else {
+        window.__zappyCustomerDiscountConfig = null;
+      }
+    } catch (e) {
+      console.warn('[ZAPPY] Customer discount runtime fetch failed', e);
+      window.__zappyCustomerDiscountConfig = null;
+    }
+    applyPricesToCards();
+    refreshProductDetailPrice();
+    if (typeof window.loadProducts === 'function') {
+      try { window.loadProducts(); } catch (e) {}
+    }
+    if (typeof window.__zappyScheduleDynamicProductGridsDiscountRefresh === 'function') {
+      try { window.__zappyScheduleDynamicProductGridsDiscountRefresh(); } catch (e) {}
+    }
+    [800, 2500].forEach(function(ms) {
+      setTimeout(refreshProductDetailPrice, ms);
+    });
+  }
+
+  function boot() {
+    syncCustomerDiscount();
+    var detail = document.getElementById('product-detail');
+    if (detail && typeof MutationObserver !== 'undefined') {
+      new MutationObserver(function() {
+        refreshProductDetailPrice();
+      }).observe(detail, { childList: true, subtree: true });
+    }
+    var grid = document.getElementById('zappy-product-grid');
+    if (grid && typeof MutationObserver !== 'undefined') {
+      new MutationObserver(function() {
+        applyPricesToCards();
+      }).observe(grid, { childList: true, subtree: true });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();

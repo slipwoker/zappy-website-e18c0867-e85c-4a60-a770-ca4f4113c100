@@ -247,6 +247,7 @@
     <!-- Mickidum Accessibility Toolbar -->
     <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
     <link rel="stylesheet" href="/styles.css">
+    <script>window.ZAPPY_WEBSITE_ID = "e18c0867-e85c-4a60-a770-ca4f4113c100"; window.ZAPPY_API_BASE = "https://api.zappy5.com";</script>
 
     <style id="zappy-dropdown-submenu-styles">
       /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
@@ -299,11 +300,37 @@
     </style>
 
     <style id="zappy-widget-visibility">
-      #mic-access-tool-general-button, .mic-access-tool-general-button,
-      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
-      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
-      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
-        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      html[dir="rtl"] .whatsapp-float { right: 20px !important; left: auto !important; }
+      html[dir="ltr"] .whatsapp-float, html:not([dir]) .whatsapp-float { left: 20px !important; right: auto !important; }
+      html[dir="rtl"] #mic-access-tool-general-button, html[dir="rtl"] .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="rtl"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="rtl"] ._access-icon { left: 20px !important; right: auto !important; }
+      html[dir="ltr"] #mic-access-tool-general-button, html[dir="ltr"] .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool .mic-access-tool-general-button,
+      html[dir="ltr"] #mic-init-access-tool #mic-access-tool-general-button,
+      html[dir="ltr"] ._access-icon,
+      html:not([dir]) #mic-access-tool-general-button, html:not([dir]) .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool .mic-access-tool-general-button,
+      html:not([dir]) #mic-init-access-tool #mic-access-tool-general-button,
+      html:not([dir]) ._access-icon { right: 20px !important; left: auto !important; }
+      @media (max-width: 768px) { .whatsapp-float { display: flex !important; } }
+      @media (min-width: 769px) { .whatsapp-float { display: flex !important; } }
+      @media (max-width: 768px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+        #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+          display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+        }
+      }
+      @media (min-width: 769px) {
+        #mic-access-tool-general-button, .mic-access-tool-general-button,
+        #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+        ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+        #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+          display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+        }
       }
     </style>
 </head>
@@ -1002,7 +1029,7 @@
   </div>
 </section>
 
-<section class="contact-visit-section" data-layout-spec="צור קשר-visit" dir="rtl">
+<section class="contact-visit-section" data-layout-spec="צור קשר-visit" dir="rtl" id="contact-visit-section">
   <!-- Decorative map-line texture overlay -->
   <div class="contact-visit-section__texture" aria-hidden="true"></div>
 
@@ -1018,56 +1045,62 @@
         </svg>
       </div>
 
-      <span class="contact-visit-section__label">ביקור במשרד</span>
-      <h2 class="contact-visit-section__heading">משרד עורכי דין<br><em>תומר מור</em> — יהוד</h2>
-      <p class="contact-visit-section__lead">המשרד ממוקם ביהוד, במרכז גוש דן, ונגיש בנוחות מתל אביב, רמת גן, פתח תקווה, ראשון לציון ויישובי השפלה. אנו מעניקים שירות ייעוץ משפטי מקצועי בתחומי מקרקעין, ליטיגציה וייצוג בבתי משפט.</p>
+      <p class="zappy-editable"><span class="contact-visit-section__label" style="color: rgb(31, 42, 51) !important;">ביקור במשרד</span>
+      </p><h2 class="contact-visit-section__heading">משרד עורכי דין<br><em>תומר מור</em> — יהוד</h2>
+      <p class="contact-visit-section__lead" style="color: rgb(31, 42, 51) !important;">המשרד ממוקם ביהוד, במרכז גוש דן, ונגיש בנוחות מתל אביב, רמת גן, פתח תקווה, ראשון לציון ויישובי השפלה. אנו מעניקים שירות ייעוץ משפטי מקצועי בתחומי מקרקעין, ליטיגציה וייצוג בבתי משפט.</p>
 
       <ul class="contact-visit-section__info-list">
-        <li class="contact-visit-section__info-item">
+        <li class="contact-visit-section__info-item zappy-grid-item-nested-grid" data-grid-item-index="0">
           <span class="contact-visit-section__info-icon" aria-hidden="true">
             <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>
           </span>
           <div class="contact-visit-section__info-content">
             <strong>כתובת</strong>
-            <span>יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל, יהוד</span>
+            <span style="color: rgb(31, 42, 51) !important;">יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל, יהוד</span>
           </div>
         </li>
-        <li class="contact-visit-section__info-item">
+        <li class="contact-visit-section__info-item zappy-grid-item-nested-grid" data-grid-item-index="1">
           <span class="contact-visit-section__info-icon" aria-hidden="true">
             <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012.06 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"></path></svg>
           </span>
           <div class="contact-visit-section__info-content">
             <strong>טלפון</strong>
-            <a href="tel:+972506778122">+972506778122</a>
+            <a href="tel:+972506778122" style="color: rgb(31, 42, 51) !important;">+972506778122</a>
           </div>
         </li>
-        <li class="contact-visit-section__info-item">
+        <li class="contact-visit-section__info-item zappy-grid-item-nested-grid" data-grid-item-index="2">
           <span class="contact-visit-section__info-icon" aria-hidden="true">
             <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </span>
           <div class="contact-visit-section__info-content">
             <strong>דוא"ל</strong>
-            <a href="mailto:tomeryhi@gmail.com">tomeryhi@gmail.com</a>
+            <a href="mailto:tomeryhi@gmail.com" style="color: rgb(31, 42, 51) !important;">tomeryhi@gmail.com</a>
           </div>
         </li>
-        <li class="contact-visit-section__info-item">
+        <li class="contact-visit-section__info-item zappy-grid-item-nested-grid" data-grid-item-index="3">
           <span class="contact-visit-section__info-icon" aria-hidden="true">
             <svg data-element-type="icon" data-icon-type="svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </span>
           <div class="contact-visit-section__info-content">
             <strong>שעות פעילות</strong>
-            <span>ראשון–חמישי, 08:00–19:00</span>
+            <span style="color: rgb(31, 42, 51) !important;">ראשון–חמישי, 08:00–19:00</span>
+          </div>
+        </li><li class="contact-visit-section__info-item zappy-grid-item-nested-grid" style="background-color: rgba(0, 0, 0, 0) !important; grid-area: auto !important; " data-grid-item-index="4">
+          <span class="contact-visit-section__info-icon" aria-hidden="true" >טקסט כאן</span>
+          <div class="contact-visit-section__info-content" >
+            <strong>שעות פעילות</strong>
+            <span style="color: rgb(31, 42, 51) !important; ">טקסט כאן</span>
           </div>
         </li>
       </ul>
 
       <div class="contact-visit-section__note">
-        <p>פגישות ייעוץ אישיות מתקיימות בתיאום מראש בלבד. מוזמנים ליצור קשר טרם הגעתכם למשרד — נשמח לקבוע עבורכם מועד נוח לפגישה ולהכין את החומרים הרלוונטיים לעניינכם.</p>
+        <p style="color: rgb(31, 42, 51) !important;">פגישות ייעוץ אישיות מתקיימות בתיאום מראש בלבד. מוזמנים ליצור קשר טרם הגעתכם למשרד — נשמח לקבוע עבורכם מועד נוח לפגישה ולהכין את החומרים הרלוונטיים לעניינכם.</p>
       </div>
 
       <div class="contact-visit-section__service-area">
-        <span class="contact-visit-section__service-label">אזורי שירות</span>
-        <div class="contact-visit-section__tags">
+        <p class="zappy-editable"><span class="contact-visit-section__service-label" style="color: rgb(31, 42, 51) !important;">אזורי שירות</span>
+        </p><div class="contact-visit-section__tags">
           <span class="contact-visit-section__tag">יהוד</span>
           <span class="contact-visit-section__tag">תל אביב</span>
           <span class="contact-visit-section__tag">פתח תקווה</span>
@@ -1077,16 +1110,16 @@
         </div>
       </div>
 
-      <a href="https://maps.google.com/?q=יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל,יהוד" target="_blank" rel="noopener noreferrer" class="contact-visit-section__map-btn">
+      <p class="zappy-editable"><a href="https://maps.google.com/?q=יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהודה הלוי 38, יהוד, ישראל,יהוד" target="_blank" rel="noopener noreferrer" class="contact-visit-section__map-btn" data-element-type="button" data-element-id="btn-1779872315185-022tu6giy" data-native-element="true">
         <svg data-element-type="icon" data-icon-type="svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
         נווט אלינו ב-Google Maps
       </a>
-    </div>
+    </p></div>
 
     <!-- Map / Location Visual Side (END = LEFT in RTL) -->
     <div class="contact-visit-section__visual">
       <div class="contact-visit-section__image-wrap">
-        <img data-placeholder="contact-visit-image-1" data-context="Aerial architectural map view of Yehud city center in Israel, showing urban street grid, buildings, and green areas from above. The image has a warm editorial tone with subtle cartographic styling, resembling a premium location illustration for a prestigious law firm specializing in real estate and litigation. Clean, bright, and composed." width="600" height="480" src="/assets/site-contact-visit-image-1.webp" alt="מיקום משרד עורכי דין תומר מור ביהוד" class="contact-visit-section__image">
+        <img data-placeholder="contact-visit-image-1" data-context="Aerial architectural map view of Yehud city center in Israel, showing urban street grid, buildings, and green areas from above. The image has a warm editorial tone with subtle cartographic styling, resembling a premium location illustration for a prestigious law firm specializing in real estate and litigation. Clean, bright, and composed." width="600" height="480" src="/assets/site-contact-visit-image-1.webp" alt="מיקום משרד עורכי דין תומר מור ביהוד" class="contact-visit-section__image" data-element-type="image" data-element-id="img-1779872315188-btnzr2xna" >
         <!-- Location badge -->
         <div class="contact-visit-section__location-badge" aria-hidden="false">
           <svg data-element-type="icon" data-icon-type="svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
@@ -1335,7 +1368,7 @@
       window.addEventListener('scroll',onS,{passive:true});
       window.addEventListener('resize',onS,{passive:true});
       onS();
-      var heroEl=document.querySelector('section[class*="hero"],[data-hero-type],main>section:first-child');
+      var heroEl=document.querySelector('section[class*="hero"],[data-hero-type],main:not(.courses-page-main)>section:first-child');
       var hasDH=false;
       if(heroEl){var hCs=getComputedStyle(heroEl);var hBI=hCs.backgroundImage;if(hBI&&hBI!=='none'){if(hBI.indexOf('url(')!==-1){var hM2=hCs.backgroundColor.match(/\d+/g);if(hM2&&hM2.length>=3){hasDH=sLum(parseInt(hM2[0]),parseInt(hM2[1]),parseInt(hM2[2]))<0.4;}else{hasDH=true;}}else if(hBI.indexOf('gradient')!==-1){var cM=hBI.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g);if(cM&&cM.length>0){var tLm=0;for(var ci=0;ci<cM.length;ci++){var pts=cM[ci].match(/\d+/g);tLm+=sLum(parseInt(pts[0]),parseInt(pts[1]),parseInt(pts[2]));}hasDH=(tLm/cM.length)<0.4;}else{hasDH=true;}}else{hasDH=true;}}else{var hM=hCs.backgroundColor.match(/\d+/g);if(hM&&hM.length>=3){hasDH=sLum(parseInt(hM[0]),parseInt(hM[1]),parseInt(hM[2]))<0.4;}}}
       if(!hasDH){window.removeEventListener('scroll',onS);window.removeEventListener('resize',onS);applyScrolled();window._zappyNavNoDarkHero=true;}
